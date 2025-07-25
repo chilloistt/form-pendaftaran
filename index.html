@@ -27,6 +27,9 @@
     <label>Nama:</label>
     <input type="text" name="nama" required>
 
+    <label>Nama Orang Tua:</label>
+    <input type="text" name="namaortu" required>
+
     <label>Kelas:</label>
     <input type="text" name="kelas" required>
 
@@ -51,13 +54,15 @@
       const form = e.target;
       const formData = new FormData(form);
 
+      const namaOrtu = form.elements['namaortu'].value;
+
       // Kirim ke Google Sheet
       fetch(scriptURL, { method: "POST", body: formData })
         .then(response => {
           alert("Data berhasil dikirim!");
 
-          // Redirect ke WhatsApp admin dengan pesan sopan dan umum
-          const whatsappMessage = `Halo, saya ingin bertanya untuk les di IR Santo.`;
+          // Redirect ke WhatsApp admin dengan nama orang tua
+          const whatsappMessage = `Halo, saya ${namaOrtu} ingin bertanya untuk les di Ir. Santo.`;
           const waLink = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(whatsappMessage)}`;
           window.location.href = waLink;
 
