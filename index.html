@@ -1,78 +1,107 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Form Pendaftaran</title>
+  <meta charset="UTF-8">
+  <title>Formulir Pendaftaran - Ir. SANTO Learning Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: Arial;
-      padding: 20px;
+      font-family: 'Anton', sans-serif;
+      background-color: #00113a;
+      color: #fff;
+      padding: 30px;
+      margin: 0;
     }
-    input, textarea, select {
+    .form-container {
+      max-width: 500px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      color: #00113a;
+    }
+    .form-container img {
+      display: block;
+      margin: 0 auto 20px auto;
+      max-width: 140px;
+    }
+    input, textarea {
       width: 100%;
-      padding: 8px;
-      margin: 8px 0;
+      padding: 12px;
+      margin-top: 12px;
+      border: 2px solid #00113a;
+      border-radius: 6px;
+      font-size: 16px;
     }
     button {
-      background-color: green;
-      color: white;
-      padding: 10px;
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background-color: #ffed00;
+      color: #00113a;
       border: none;
+      font-size: 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #e6d900;
+    }
+    h2 {
+      text-align: center;
+      color: #00113a;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <h2>Form Pendaftaran</h2>
+
+<div class="form-container">
+  <img src="logo.png" alt="Logo Ir. Santo Learning Center">
+  <h2>Formulir Pendaftaran</h2>
   <form id="daftarForm">
-    <label>Nama:</label>
-    <input type="text" name="nama" required>
-
-    <label>Nama Orang Tua:</label>
-    <input type="text" name="namaortu" required>
-
-    <label>Kelas:</label>
-    <input type="text" name="kelas" required>
-
-    <label>Sekolah:</label>
-    <input type="text" name="sekolah" required>
-
-    <label>Nomor WhatsApp:</label>
-    <input type="text" name="nomorwa" required>
-
-    <label>Mapel yang Diambil:</label>
-    <textarea name="mapel" required placeholder="Pisahkan dengan koma jika lebih dari satu (misal: Matematika, Fisika)"></textarea>
-
-    <button type="submit">Daftar</button>
+    <input type="text" id="nama" placeholder="Nama Anak" required>
+    <input type="text" id="kelas" placeholder="Kelas (misalnya 10 IPA)" required>
+    <input type="text" id="sekolah" placeholder="Asal Sekolah" required>
+    <input type="tel" id="nowa" placeholder="No WhatsApp" required>
+    <textarea id="pesan" placeholder="Pesan Tambahan (opsional)"></textarea>
+    <button type="submit">Daftar & Kirim ke WhatsApp</button>
   </form>
+</div>
 
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwHlxO05xeKL5VywRoqw_LGbS3qPJS5sSrdNW5pqfe1YI-RNp3PnvyRjObT8WBuBZv2/exec";
-    const nomorAdmin = "6287782810254"; // Nomor WA tujuan
+<script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyqhQjvQ-VBqISYZdJqW72kLHyC4emGeJU658IIZh__H3AHqd3EqIhin_6YnZ19zJEO/exec';
+  const form = document.getElementById('daftarForm');
 
-    document.getElementById("daftarForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
+  form.addEventListener('submit', e => {
+    e.preventDefault();
 
-      const namaOrtu = form.elements['namaortu'].value;
+    const nama = document.getElementById('nama').value;
+    const kelas = document.getElementById('kelas').value;
+    const sekolah = document.getElementById('sekolah').value;
+    const nowa = document.getElementById('nowa').value;
+    const pesan = document.getElementById('pesan').value;
 
-      // Kirim ke Google Sheet
-      fetch(scriptURL, { method: "POST", body: formData })
-        .then(response => {
-          alert("Data berhasil dikirim!");
+    const data = { nama, kelas, sekolah, nowa, pesan };
 
-          // Redirect ke WhatsApp admin dengan nama orang tua
-          const whatsappMessage = `Halo, saya ${namaOrtu} ingin bertanya untuk les di Ir. Santo.`;
-          const waLink = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(whatsappMessage)}`;
-          window.location.href = waLink;
-
-          form.reset();
-        })
-        .catch(error => {
-          alert("Gagal mengirim data!");
-          console.error("Error:", error);
-        });
+    fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    }).then(() => {
+      const waText = `Halo! Saya ingin mendaftar.%0A%0ANama Anak: ${nama}%0AKelas: ${kelas}%0AAsal Sekolah: ${sekolah}%0ANo WA: ${nowa}%0APesan: ${pesan}`;
+      const waLink = `https://wa.me/6287782810254?text=${waText}`;
+      window.location.href = waLink;
+    }).catch(err => {
+      alert("Gagal kirim! Coba lagi.");
+      console.error(err);
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
