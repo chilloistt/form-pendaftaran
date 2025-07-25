@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Pendaftaran</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+    }
+    button {
+      background-color: green;
+      color: white;
+      padding: 10px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Form Pendaftaran</h2>
+  <form id="daftarForm">
+    <label>Nama:</label>
+    <input type="text" name="nama" required>
+
+    <label>Kelas:</label>
+    <input type="text" name="kelas" required>
+
+    <label>Sekolah:</label>
+    <input type="text" name="sekolah" required>
+
+    <label>Nomor WhatsApp:</label>
+    <input type="text" name="nomorwa" required>
+
+    <label>Mapel yang Diambil:</label>
+    <textarea name="mapel" required placeholder="Pisahkan dengan koma jika lebih dari satu (misal: Matematika, Fisika)"></textarea>
+
+    <button type="submit">Daftar</button>
+  </form>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwHlxO05xeKL5VywRoqw_LGbS3qPJS5sSrdNW5pqfe1YI-RNp3PnvyRjObT8WBuBZv2/exec";
+    const nomorAdmin = "6287782810254"; // Nomor WA tujuan
+
+    document.getElementById("daftarForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const nama = formData.get("nama");
+
+      // Kirim ke Google Sheet
+      fetch(scriptURL, { method: "POST", body: formData })
+        .then(response => {
+          // Setelah berhasil, redirect ke WhatsApp admin
+          const whatsappMessage = `Halo, saya ${nama} ingin mendaftar les.`;
+          const waLink = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(whatsappMessage)}`;
+          alert("Data berhasil dikirim!");
+          window.open(waLink, "_blank");
+          form.reset();
+        })
+        .catch(error => alert("Gagal mengirim data!"));
+    });
+  </script>
+</body>
+</html>
