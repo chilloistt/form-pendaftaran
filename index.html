@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -50,19 +51,22 @@
       const form = e.target;
       const formData = new FormData(form);
 
-      const nama = formData.get("nama");
-
       // Kirim ke Google Sheet
       fetch(scriptURL, { method: "POST", body: formData })
         .then(response => {
-          // Setelah berhasil, redirect ke WhatsApp admin
-          const whatsappMessage = `Halo, saya ${nama} ingin mendaftar les.`;
-          const waLink = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(whatsappMessage)}`;
           alert("Data berhasil dikirim!");
-          window.open(waLink, "_blank");
+
+          // Redirect ke WhatsApp admin dengan pesan sopan dan umum
+          const whatsappMessage = `Halo, saya ingin bertanya untuk les di IR Santo.`;
+          const waLink = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(whatsappMessage)}`;
+          window.location.href = waLink;
+
           form.reset();
         })
-        .catch(error => alert("Gagal mengirim data!"));
+        .catch(error => {
+          alert("Gagal mengirim data!");
+          console.error("Error:", error);
+        });
     });
   </script>
 </body>
